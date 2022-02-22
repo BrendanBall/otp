@@ -35,7 +35,8 @@
 	 read_link_info/1, read_link_info/2,
 	 read_link/1, read_link_all/1,
 	 make_link/2, make_symlink/2,
-	 read_file/1, write_file/2, write_file/3]).
+	 read_file/1, write_file/2, write_file/3,
+     lock_file/2]).
 %% Specialized
 -export([ipread_s32bu_p32bu/3]).
 %% Generic file contents.
@@ -128,6 +129,9 @@
 			 | {use_threads, boolean()}.
 -type file_info_option() :: {'time', 'local'} | {'time', 'universal'}
 			  | {'time', 'posix'} | 'raw'.
+
+-type file_lock_mode()  :: 'shared' | 'exclusive'.
+
 %%% BIFs
 
 -export([native_name_encoding/0]).
@@ -489,6 +493,15 @@ do_write_file(Name, IOData, ModeList) ->
         E2 ->
             E2
     end.
+
+-spec lock_file(File, Mode) -> ok | {error, Reason} when
+      File :: iodata() | #file_descriptor{},
+      Mode :: file_lock_mode(),
+      Reason :: posix() | badarg.
+
+lock_file(#file_descriptor{} = File, Mode) ->
+    ?PRIM_FILE:lock_file(File, Mode).
+
 
 %% Obsolete, undocumented, local node only, don't use!.
 %% XXX to be removed.

@@ -170,6 +170,7 @@ WRAP_FILE_HANDLE_EXPORT(advise_nif)
 WRAP_FILE_HANDLE_EXPORT(get_handle_nif)
 WRAP_FILE_HANDLE_EXPORT(ipread_s32bu_p32bu_nif)
 WRAP_FILE_HANDLE_EXPORT(read_handle_info_nif)
+WRAP_FILE_HANDLE_EXPORT(lock_file_nif)
 
 static ErlNifFunc nif_funcs[] = {
     /* File handle ops */
@@ -185,6 +186,7 @@ static ErlNifFunc nif_funcs[] = {
     {"allocate_nif", 3, allocate_nif, ERL_NIF_DIRTY_JOB_IO_BOUND},
     {"advise_nif", 4, advise_nif, ERL_NIF_DIRTY_JOB_IO_BOUND},
     {"read_handle_info_nif", 1, read_handle_info_nif, ERL_NIF_DIRTY_JOB_IO_BOUND},
+    {"lock_file_nif", 2, lock_file_nif, ERL_NIF_DIRTY_JOB_IO_BOUND},
 
     /* Filesystem ops */
     {"make_hard_link_nif", 2, make_hard_link_nif, ERL_NIF_DIRTY_JOB_IO_BOUND},
@@ -1042,6 +1044,20 @@ static ERL_NIF_TERM read_handle_info_nif_impl(efile_data_t *d, ErlNifEnv *env, i
     }
 
     return build_file_info(env, &info);
+}
+
+static ERL_NIF_TERM lock_file_nif_impl(efile_data_t *d, ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
+    // posix_errno_t posix_errno;
+    // efile_fileinfo_t info = {0};
+
+    // ASSERT(argc == 0);
+
+    // if((posix_errno = efile_read_handle_info(d, &info))) {
+    //     return posix_error_to_tuple(env, posix_errno);
+    // }
+
+    // return build_file_info(env, &info);
+    return am_ok;
 }
 
 static ERL_NIF_TERM set_permissions_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {

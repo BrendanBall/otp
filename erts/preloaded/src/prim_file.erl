@@ -24,7 +24,8 @@
 -export([open/2, close/1,
          sync/1, datasync/1, truncate/1, advise/4, allocate/3,
          read_line/1, read/2, write/2, position/2,
-         pread/2, pread/3, pwrite/2, pwrite/3]).
+         pread/2, pread/3, pwrite/2, pwrite/3,
+         lock_file/2]).
 
 %% OTP internal.
 
@@ -518,6 +519,8 @@ delayed_close_nif(_FileRef) ->
     erlang:nif_error(undef).
 read_handle_info_nif(_FileRef) ->
     erlang:nif_error(undef).
+lock_file_nif(_FileRef, _Mode) ->
+    erlang:nif_error(undef).
 
 %%
 %% Quality-of-life helpers
@@ -681,6 +684,9 @@ write_file_info_1(Filename, Info, TimeType) ->
         throw:Reason -> {error, Reason};
         error:_ -> {error, badarg}
     end.
+
+lock_file(#file_descriptor{module = ?MODULE} = File, Mode) ->
+    lock_file_nif(File, Mode).
 
 set_owner(EncodedName, Uid, undefined) ->
     set_owner(EncodedName, Uid, -1);

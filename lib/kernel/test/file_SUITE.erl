@@ -64,6 +64,7 @@
 	 read_write/1, pread_write/1, append/1, exclusive/1]).
 -export([ e_delete/1, e_rename/1, e_make_dir/1, e_del_dir/1]).
 -export([otp_5814/1, otp_10852/1]).
+-export([lock_file/1]).
 
 -export([ read_not_really_compressed/1,
 	  read_compressed_cooked/1, read_compressed_cooked_binary/1,
@@ -3963,6 +3964,16 @@ interleaved_read_write(Config) when is_list(Config) ->
     %%
     [] = flush(),
     ok.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Tests file locks
+lock_file(Config) when is_list(Config) ->
+    PrivDir = proplists:get_value(priv_dir, Config),
+    FilePath = filename:join(PrivDir, "lockfile"),
+    File = file:open(FilePath),
+    ok = file:lock_file(File, 'exclusive', [write]),
+    ok.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
